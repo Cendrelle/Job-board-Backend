@@ -1,0 +1,28 @@
+{
+  "name": "job-board-backend",
+  "version": "1.0.0",
+  "description": "Ce projet backend est le cœur fonctionnel d’une plateforme de recrutement (Job Board). Il fournit une API REST sécurisée permettant la gestion complète des utilisateurs, des offres d’emploi et des candidatures, tout en assurant la logique métier et la persistance des données.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Cendrelle/Job-board-Backend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Cendrelle/Job-board-Backend/issues"
+  },
+  "homepage": "https://github.com/Cendrelle/Job-board-Backend#readme",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "helmet": "^8.1.0",
+    "nodemon": "^3.1.11"
+  }
+}
