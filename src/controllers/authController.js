@@ -8,13 +8,19 @@ exports.register = async (req, res) => {
     const { email, password, role } = req.body;
     const hashedPassword = await hashPassword(password);
     
+    // Changement ici : on utilise passwordHash comme dans le schéma Prisma
     const user = await prisma.user.create({
-      data: { email, password_hash: hashedPassword, role }
+      data: { 
+        email, 
+        passwordHash: hashedPassword, // Match avec le schéma de Cendrelle
+        role: role || 'CANDIDATE'    // Utilise CANDIDATE par défaut
+      }
     });
 
     res.status(201).json({ message: "Utilisateur créé !", userId: user.id });
   } catch (error) {
-    res.status(400).json({ error: "Erreur lors de l'inscription." });
+    console.error(error);
+    res.status(400).json({ error: "Erreur lors de l'inscription. Vérifiez si l'email existe déjà." });
   }
 };
 
@@ -24,7 +30,8 @@ exports.login = async (req, res) => {
     const { email, password } = req.body;
     const user = await prisma.user.findUnique({ where: { email } });
 
-    if (!user || !(await comparePassword(password, user.password_hash))) {
+    // Changement ici aussi : user.passwordHash
+    if (!user || !(await comparePassword(password, user.passwordHash))) {
       return res.status(401).json({ error: "Identifiants invalides" });
     }
 
