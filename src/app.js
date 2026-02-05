@@ -2,6 +2,9 @@ const express = require("express");
 const helmet = require("helmet"); // Sécurise les headers HTTP
 const cors = require("cors");     // Gère les autorisations d'accès entre domaines
 const authRoutes = require("./routes/auth.routes"); // Import de ton travail de Phase 2
+// 1. Importation  des outils Swagger
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpecs = require('./config/swagger');
 
 const app = express();
 
@@ -13,6 +16,11 @@ app.use(express.json()); // Permet de lire les données JSON envoyées (ex: logi
 // --- Tes Routes (Phase 2) ---
 // Toutes tes routes d'authentification commenceront par /api/auth
 app.use("/api/auth", authRoutes); 
+
+
+// route de la documentation 
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
+
 
 // --- Route de base ---
 app.get("/", (req, res) => {
