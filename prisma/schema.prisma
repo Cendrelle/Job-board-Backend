@@ -1,0 +1,83 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int           @id @default(autoincrement())
+  email        String        @unique
+  passwordHash String        @map("password_hash")
+  role         Role          @default(CANDIDATE)
+  createdAt    DateTime      @default(now()) @map("created_at")
+  applications Application[]
+  profile      Profile?
+
+  @@map("users")
+}
+
+model Profile {
+  id          Int     @id @default(autoincrement())
+  userId      Int     @unique @map("user_id")
+  firstName   String  @map("first_name")
+  lastName    String  @map("last_name")
+  description String?
+  cv          String?
+  phone       String?
+  user        User    @relation(fields: [userId], references: [id])
+
+  @@map("profiles")
+}
+
+model Job {
+  id           Int           @id @default(autoincrement())
+  title        String
+  companyName  String        @map("company_name")
+  companyLogo  String?       @map("company_logo")
+  description  String
+  location     String?
+  source       JobSource
+  type         JobType
+  isActive     Boolean       @default(true) @map("is_active")
+  applications Application[]
+
+  @@map("jobs")
+}
+
+model Application {
+  id        Int               @id @default(autoincrement())
+  userId    Int               @map("user_id")
+  jobId     Int               @map("job_id")
+  status    ApplicationStatus @default(PENDING)
+  createdAt DateTime          @default(now()) @map("created_at")
+  job       Job               @relation(fields: [jobId], references: [id])
+  user      User              @relation(fields: [userId], references: [id])
+
+  @@unique([userId, jobId])
+  @@index([jobId], map: "applications_job_id_fkey")
+  @@map("applications")
+}
+
+enum Role {
+  ADMIN
+  CANDIDATE
+}
+
+enum JobSource {
+  INTERNAL
+  SCRAPED
+}
+
+enum JobType {
+  CDI
+  CDD
+}
+
+enum ApplicationStatus {
+  PENDING
+  REVIEWED
+  REJECTED
+}
