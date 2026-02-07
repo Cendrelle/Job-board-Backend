@@ -10,6 +10,11 @@ const options = {
       contact: {
         name: 'Job-board Developer',
       },
+      'x-api-credentials': {
+        'Default Admin Email': 'admin@jobbooster.com (configurable via ADMIN_EMAIL en .env)',
+        'Default Admin Password': 'AdminPassword123! (configurable via ADMIN_PASSWORD en .env)',
+        'Note': 'Changez obligatoirement ces identifiants en production',
+      },
     },
     servers: [
       {
