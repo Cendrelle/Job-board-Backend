@@ -1,21 +1,21 @@
 
 require("dotenv").config();
-const { execSync } = require('child_process');
+const { execSync } = require("child_process");
 const app = require("./app");
-
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8000;
 
 // Fonction pour exécuter le seed automatiquement
 async function runSeedIfNeeded() {
   try {
-    // En développement, exécuter le seed automatiquement
-    if (process.env.NODE_ENV === 'development') {
-      console.log('🌱 Initialisation du compte admin...');
-      execSync('npm run db:seed', { stdio: 'inherit' });
+    if (process.env.NODE_ENV === "development") {
+      console.log("🌱 Initialisation du compte admin...");
+      execSync("npm run db:seed", { stdio: "inherit" });
     }
   } catch (error) {
-    console.warn('⚠️ Impossible d\'exécuter le seed (la base de données pourrait ne pas être prête)');
-    console.warn('Exécutez manuellement: npm run db:seed');
+    console.warn(
+      "⚠️ Impossible d'exécuter le seed (la base de données pourrait ne pas être prête)"
+    );
+    console.warn("Exécutez manuellement: npm run db:seed");
   }
 }
 
@@ -26,4 +26,3 @@ runSeedIfNeeded().then(() => {
     console.log(`📚 Documentation API: http://localhost:${PORT}/api-docs`);
   });
 });
-
