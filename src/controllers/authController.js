@@ -5,7 +5,7 @@ const { hashPassword, comparePassword, generateToken } = require('../utils/auth'
 // Inscription (Register)
 exports.register = async (req, res) => {
   try {
-    const { email, password, role } = req.body;
+    const { email, password} = req.body;
     const hashedPassword = await hashPassword(password);
     
     // Changement ici : on utilise passwordHash comme dans le schéma Prisma
@@ -13,7 +13,7 @@ exports.register = async (req, res) => {
       data: { 
         email, 
         passwordHash: hashedPassword, // Match avec le schéma de Cendrelle
-        role: role || 'CANDIDATE'    // Utilise CANDIDATE par défaut
+        role: 'CANDIDATE'    // Utilise CANDIDATE par défaut
       }
     });
 
