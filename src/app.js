@@ -1,30 +1,30 @@
 const express = require("express");
-const helmet = require("helmet"); // Sécurise les headers HTTP
-const cors = require("cors");     // Gère les autorisations d'accès entre domaines
-const authRoutes = require("./routes/auth.routes"); // Import de ton travail de Phase 2
-// 1. Importation  des outils Swagger
-const swaggerUi = require('swagger-ui-express');
-const swaggerSpecs = require('./config/swagger');
+const helmet = require("helmet");
+const cors = require("cors");
+const authRoutes = require("./routes/auth.routes");
+const jobRoutes = require("./routes/jobRoutes");
+
+const swaggerUi = require("swagger-ui-express");
+const swaggerSpecs = require("./config/swagger");
 
 const app = express();
 
-// --- Middlewares Globaux ---
-app.use(helmet()); 
+// Middlewares
+app.use(helmet());
 app.use(cors());
-app.use(express.json()); // Permet de lire les données JSON envoyées (ex: login/password)
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));   // <--- IMPORTANT !!
 
-// --- Tes Routes (Phase 2) ---
-// Toutes tes routes d'authentification commenceront par /api/auth
-app.use("/api/auth", authRoutes); 
+// Routes
+app.use("/api/auth", authRoutes);
+app.use("/api/jobs", jobRoutes);
 
+// Swagger
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 
-// route de la documentation 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
-
-
-// --- Route de base ---
+// Route de test
 app.get("/", (req, res) => {
-  res.json({ message: "API Job Board - Serveur opérationnel " });
+  res.json({ message: "API Job Board - Serveur opérationnel" });
 });
 
 module.exports = app;
