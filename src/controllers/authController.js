@@ -4,19 +4,15 @@ const { hashPassword, comparePassword, generateToken } = require('../utils/auth'
 
 exports.register = async (req, res) => {
   try {
-    const body = req.body;
-
-    if (!body.email || !body.password) {
-      return res.status(400).json({ error: "Email et mot de passe requis" });
-    }
-
-    const hashedPassword = await hashPassword(body.password);
-
+    const { email, password} = req.body;
+    const hashedPassword = await hashPassword(password);
+    
+    // Changement ici : on utilise passwordHash comme dans le schéma Prisma
     const user = await prisma.user.create({
-      data: {
-        email: body.email,
-        passwordHash: hashedPassword,
-        role: body.role || 'CANDIDATE'
+      data: { 
+        email, 
+        passwordHash: hashedPassword, // Match avec le schéma de Cendrelle
+        role: 'CANDIDATE'    // Utilise CANDIDATE par défaut
       }
     });
 
