@@ -11,19 +11,18 @@ const options = {
         name: 'Job-board Developer',
       },
       'x-api-credentials': {
-        'Default Admin Email': 'admin@jobbooster.com (configurable via ADMIN_EMAIL en .env)',
-        'Default Admin Password': 'AdminPassword123! (configurable via ADMIN_PASSWORD en .env)',
+        'Default Admin Email': 'admin@jobbooster.com',
+        'Default Admin Password': 'AdminPassword123!',
         'Note': 'Changez obligatoirement ces identifiants en production',
       },
     },
     servers: [
       {
-        url: 'http://localhost:3000', // L'URL du serveur local
-        description: 'Serveur de développement',
+        url: 'http://localhost:3000',
+        description: 'Serveur local',
       },
     ],
   },
-  // Chemin vers les fichiers qui contiennent les annotations Swagger (les routes)
   apis: ['./src/routes/*.js'], 
 };
 
