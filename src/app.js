@@ -3,6 +3,7 @@ const helmet = require("helmet");
 const cors = require("cors");
 const authRoutes = require("./routes/auth.routes");
 const jobRoutes = require("./routes/jobRoutes");
+const profileRoutes = require("./routes/profile.routes");
 
 const swaggerUi = require("swagger-ui-express");
 const swaggerSpecs = require("./config/swagger");
@@ -18,7 +19,7 @@ app.use(express.urlencoded({ extended: true }));   // <--- IMPORTANT !!
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/jobs", jobRoutes);
-
+app.use("/api", profileRoutes); // <-- Notez le préfixe "/api" pour les routes de profil
 // Swagger
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 

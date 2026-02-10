@@ -1,9 +1,14 @@
 const express = require("express");
 const router = express.Router();
 const upload = require("../config/multer");
-const { uploadCv } = require("../controllers/profileController");
-const auth = require("../middlewares/auth");
+const { authenticateToken} = require("../middlewares/authMiddleware");
+const { createOrUpdateProfile } = require("../controllers/profileController");
 
-router.post("/upload-cv", auth, upload.single("cv"), uploadCv);
+router.post(
+  "/profile",
+  authenticateToken,
+  upload.single("cv"), // CV + champs texte ensemble
+  createOrUpdateProfile
+);
 
 module.exports = router;
