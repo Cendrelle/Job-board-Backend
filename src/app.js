@@ -7,15 +7,19 @@ const profileRoutes = require("./routes/profile.routes");
 const applyRoutes = require("./routes/auth.routes");
 const swaggerUi = require("swagger-ui-express");
 const swaggerSpecs = require("./config/swagger");
+const cookieParser = require("cookie-parser");
 
 const app = express();
 
 // Middlewares
 app.use(helmet());
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3001', // ⚠️ ici tu dois mettre ton frontend exact quand tu es en local. En production, ce sera l'URL du frontend unique 
+  credentials: true,               // ✅ permet d'envoyer les cookies
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));   // <--- IMPORTANT !!
-
+app.use(cookieParser());
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/jobs", jobRoutes);

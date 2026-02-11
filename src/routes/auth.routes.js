@@ -24,5 +24,12 @@ router.post("/jobs/:id/apply", applyToJobController.applyToJob);
 // Protégé : nécessite une authentification JWT
 router.post("/jobs/:id/apply", authenticateToken, applyToJobController.applyToJob);
 
-
+router.get("/me", authenticateToken, (req, res) => {
+  res.json({
+    user: {
+      id: req.user.id,
+      role: req.user.role,
+    },
+  });
+});
 module.exports = router;
