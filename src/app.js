@@ -9,10 +9,20 @@ const swaggerUi = require("swagger-ui-express");
 const swaggerSpecs = require("./config/swagger");
 
 const app = express();
+const allowedOrigins = [
+  "http://localhost:3001",
+  "http://localhost:3000",
+];
+
 
 // Middlewares
 app.use(helmet());
-app.use(cors());
+app.use(
+  cors({
+    origin: allowedOrigins,
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));   // <--- IMPORTANT !!
 
