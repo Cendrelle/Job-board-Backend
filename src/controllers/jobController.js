@@ -26,6 +26,7 @@ exports.getAllJobs = async (req, res) => {
         id: true,
         title: true,
         companyName: true,
+        description: true,
         location: true,
         type: true,
         createdAt: true,
