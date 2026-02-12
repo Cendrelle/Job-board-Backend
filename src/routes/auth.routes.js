@@ -14,7 +14,7 @@ router.post('/register', authController.register);
 
 // Connexion : POST /api/auth/login
 router.post('/login', authController.login);
-
+router.post("/logout", authController.logout); 
 // gestion des candidatures : POST /api/jobs/:id/apply
 
 router.post("/jobs/:id/apply", applyToJobController.applyToJob);

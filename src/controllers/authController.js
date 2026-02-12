@@ -65,3 +65,17 @@ exports.login = async (req, res) => {
     res.status(500).json({ error: "Erreur serveur" });
   }
 };
+
+exports.logout = async (req, res) => {
+  try {
+    res.clearCookie("access_token", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+    });
+
+    return res.json({ message: "Déconnexion réussie" });
+  } catch (error) {
+    return res.status(500).json({ message: "Erreur lors de la déconnexion" });
+  }
+};
