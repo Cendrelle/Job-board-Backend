@@ -5,22 +5,20 @@ const JWT_SECRET = process.env.JWT_SECRET || "secret";
  * Middleware pour vérifier le token JWT
  */
 function authenticateToken(req, res, next) {
-  const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
+  const token = req.cookies.access_token;
 
   if (!token) {
-    return res.status(401).json({ message: "Access denied. No token provided." });
+    return res.status(401).json({ message: "Non authentifié" });
   }
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET);
-    req.user = decoded; 
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded;
     next();
   } catch (err) {
-    return res.status(403).json({ message: "Invalid token." });
+    return res.status(403).json({ message: "Token invalide" });
   }
 }
-
 /**
  * Middleware pour vérifier le rôle de l'utilisateur
  * @param {Array} roles
