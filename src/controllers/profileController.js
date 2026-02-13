@@ -1,6 +1,63 @@
 
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
+
+exports.getPublicProfiles = async (req, res) => {
+  try {
+    const profiles = await prisma.profile.findMany({
+      where: { confirmationStatus: "ACCEPTED" },
+      include: {
+        user: {
+          select: {
+            id: true,
+            email: true,
+            createdAt: true,
+          },
+        },
+      },
+      orderBy: { id: "desc" },
+    });
+
+    res.json({
+      count: profiles.length,
+      profiles,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: "Erreur lors de la récupération des profils publics",
+    });
+  }
+};
+
+exports.getMyProfile = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const profile = await prisma.profile.findUnique({
+      where: { userId },
+      include: {
+        user: {
+          select: {
+            id: true,
+            email: true,
+            role: true,
+            createdAt: true,
+          },
+        },
+      },
+    });
+
+    if (!profile) {
+      return res.status(404).json({ message: "Profil introuvable" });
+    }
+
+    res.json({ profile });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Erreur lors de la récupération du profil" });
+  }
+};
+
 exports.getAllProfiles = async (req, res) => {
   try {
     const profiles = await prisma.profile.findMany({
@@ -10,6 +67,7 @@ exports.getAllProfiles = async (req, res) => {
             id: true,
             email: true,
             role: true,
+            createdAt: true,
           },
         },
       },
@@ -82,6 +140,7 @@ exports.createOrUpdateProfile = async (req, res) => {
         competences,
         formation,
         experiences,
+        confirmationStatus: "PENDING",
         ...(cvPath && { cv: cvPath }),
       },
       create: {
@@ -92,6 +151,7 @@ exports.createOrUpdateProfile = async (req, res) => {
         competences,
         formation,
         experiences,
+        confirmationStatus: "PENDING",
         ...(cvPath && { cv: cvPath }),
       },
     });

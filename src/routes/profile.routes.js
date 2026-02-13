@@ -5,6 +5,8 @@ const { authenticateToken, authorizeRole } = require("../middlewares/authMiddlew
 const {
   createOrUpdateProfile,
   getAllProfiles,
+  getMyProfile,
+  getPublicProfiles,
 } = require("../controllers/profileController");
 
 /**
@@ -67,6 +69,8 @@ router.post(
   createOrUpdateProfile
 );
 
+router.get("/profile/me", authenticateToken, getMyProfile);
+
 /**
  * @swagger
  * /api/public/profiles:
@@ -78,7 +82,7 @@ router.post(
  *         description: Liste des profils
  */
 // Lister tous les profils (public)
-router.get("/public/profiles", getAllProfiles);
+router.get("/public/profiles", getPublicProfiles);
 
 /**
  * @swagger

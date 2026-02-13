@@ -10,6 +10,9 @@
     "db:seed": "npx prisma db seed",
     "db:reset-admin": "node prisma/reset.js"
   },
+  "prisma": {
+    "seed": "node prisma/seed.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Cendrelle/Job-board-Backend.git"
