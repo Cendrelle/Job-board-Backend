@@ -24,7 +24,9 @@ model Profile {
   userId      Int     @unique @map("user_id")
   firstName   String  @map("first_name")
   lastName    String  @map("last_name")
-  description String?
+  competences String?
+  formation   String?
+  experiences String?
   cv          String?
   phone       String?
   user        User    @relation(fields: [userId], references: [id])

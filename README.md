@@ -105,8 +105,8 @@ npm run db:seed
 npm run dev
 ```
 
-Le serveur sera accessible sur `http://localhost:3000`
-Documentation API : `http://localhost:3000/api-docs`
+Le serveur sera accessible sur `http://localhost:3030` (ou le port défini dans `PORT`)
+Documentation API : `http://localhost:3030/api-docs`
 
 ### Réinitialiser le mot de passe admin
 
@@ -154,9 +154,9 @@ L'application suit une architecture MVC (Modèle-Vue-Contrôleur) adaptée à un
    - Token contient : `{ id, role }`
 
 3. **Accès aux routes protégées**:
-   - Le token JWT est envoyé dans le header `Authorization: Bearer TOKEN`
-   - Middleware `verifyToken` valide le token
-   - Middleware `checkRole` vérifie les permissions par rôle
+   - Le token JWT est stocké dans un cookie `access_token` (httpOnly)
+   - Middleware `authenticateToken` valide le token
+   - Middleware `authorizeRole` vérifie les permissions par rôle
    - La requête est autorisée ou rejetée
 
 ## 🗂️ Hiérarchie des fichiers après setup
@@ -197,3 +197,7 @@ L'application suit une architecture MVC (Modèle-Vue-Contrôleur) adaptée à un
 - **Middlewares**: Gèrent l'authentification, autorisation et validation
 - **Utilitaires**: Fonctions réutilisables
 - **Base de données**: Gérée par Prisma avec MySQL
+
+## Champs du profil
+Les champs du profil sont: firstName, lastName, phone, competences, formation, experiences, cv.
+

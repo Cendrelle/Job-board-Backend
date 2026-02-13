@@ -58,3 +58,5 @@ ADMIN_EMAIL        # Email où envoyer les notifications
 ```
 
 Si ces variables ne sont pas définies, le système fonctionne mais les emails ne seront pas envoyés.
+
+Note: Si SMTP_* ne sont pas fournis, le service utilise EMAIL_USER et EMAIL_PASSWORD (Gmail).

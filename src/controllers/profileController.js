@@ -33,12 +33,39 @@ exports.getAllProfiles = async (req, res) => {
 exports.createOrUpdateProfile = async (req, res) => {
   try {
     const userId = req.user.id;
-    const { firstName, lastName, phone, description } = req.body;
+    const { firstName, lastName, phone, competences, formation, experiences } = req.body;
 
     if (!firstName || !lastName) {
       return res.status(400).json({
         message: "Le prénom et le nom sont obligatoires",
       });
+    }
+
+    if (typeof firstName !== "string" || typeof lastName !== "string") {
+      return res.status(400).json({ message: "Format de nom invalide" });
+    }
+
+    const trimmedFirstName = firstName.trim();
+    const trimmedLastName = lastName.trim();
+    if (!trimmedFirstName || !trimmedLastName) {
+      return res.status(400).json({ message: "Le prénom et le nom sont obligatoires" });
+    }
+
+    const maxLen = 500;
+    const fieldsToCheck = [
+      { key: "competences", value: competences },
+      { key: "formation", value: formation },
+      { key: "experiences", value: experiences },
+      { key: "phone", value: phone },
+    ];
+
+    for (const field of fieldsToCheck) {
+      if (field.value && typeof field.value !== "string") {
+        return res.status(400).json({ message: `Format invalide pour ${field.key}` });
+      }
+      if (typeof field.value === "string" && field.value.length > maxLen) {
+        return res.status(400).json({ message: `${field.key} trop long (max ${maxLen})` });
+      }
     }
 
     // Si un CV est envoyé
@@ -49,18 +76,22 @@ exports.createOrUpdateProfile = async (req, res) => {
     const profile = await prisma.profile.upsert({
       where: { userId },
       update: {
-        firstName,
-        lastName,
+        firstName: trimmedFirstName,
+        lastName: trimmedLastName,
         phone,
-        description,
+        competences,
+        formation,
+        experiences,
         ...(cvPath && { cv: cvPath }),
       },
       create: {
         userId,
-        firstName,
-        lastName,
+        firstName: trimmedFirstName,
+        lastName: trimmedLastName,
         phone,
-        description,
+        competences,
+        formation,
+        experiences,
         ...(cvPath && { cv: cvPath }),
       },
     });

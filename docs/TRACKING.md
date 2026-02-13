@@ -39,8 +39,8 @@
 - [x] Routes d'authentification (`/api/auth/register`, `/api/auth/login`)
 - [x] Hashage des mots de passe (bcryptjs)
 - [x] Génération de JWT tokens
-- [x] Middleware de vérification JWT (`verifyToken`)
-- [x] Middleware de contrôle d'accès par rôle (`checkRole`)
+- [x] Middleware de vérification JWT (`authenticateToken`)
+- [x] Middleware de contrôle d'accès par rôle (`authorizeRole`)
 
 ### Phase 3 - Admin Seeding ✅ COMPLETED (Feb 6, 2026)
 - [x] Script Prisma Seed pour initialisation admin automatique
@@ -52,7 +52,7 @@
 - [x] Validation de tous les critères d'acceptation
 
 ### Phase 4 - RBAC Enhancement 🔄 IN PROGRESS
-- [ ] Améliorer `checkRole` pour supporter plusieurs rôles
+- [ ] Améliorer `authorizeRole` pour supporter plusieurs rôles
 - [ ] Appliquer middlewares RBAC aux routes protégées
 - [ ] Ajouter rôles supplémentaires (RECRUITER, COMPANY, HR)
 - [ ] Tests unitaires pour l'authentification
@@ -195,7 +195,7 @@
 
 ### Immediate (Next 1-2 days)
 - [ ] **RBAC Enhancement**
-  - Améliorer middleware `checkRole` pour multi-rôles
+  - Améliorer middleware `authorizeRole` pour multi-rôles
   - Appliquer RBAC aux routes existantes
   - Ajouter rôles supplémentaires (RECRUITER, COMPANY)
   - Tests pour vérifier les permissions
@@ -298,7 +298,7 @@
 - **Dependencies**: 9 packages (express, prisma, bcryptjs, swagger, etc.)
 - **Database Tables**: 4 (User, Profile, Job, Application)
 - **API Routes**: 2 (auth routes implemented, job/application routes pending)
-- **Middleware**: 2 (verifyToken, checkRole)
+- **Middleware**: 2 (authenticateToken, authorizeRole)
 
 ### Quality
 - **Code Review**: ✅ All implementation checks passed (26/26)
@@ -350,3 +350,4 @@ src/
 
 **Last Review**: February 6, 2026
 **Next Review Date**: February 8, 2026 (RBAC enhancement)
+

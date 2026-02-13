@@ -1,29 +1,26 @@
-const swaggerJsdoc = require('swagger-jsdoc');
+const swaggerJsdoc = require("swagger-jsdoc");
+
+const port = process.env.PORT || 3030;
 
 const options = {
   definition: {
-    openapi: '3.0.0',
+    openapi: "3.0.0",
     info: {
-      title: 'Job-board',
-      version: '1.0.0',
-      description: 'Documentation application web avec Swagger',
+      title: "Job-board",
+      version: "1.0.0",
+      description: "Documentation application web avec Swagger",
       contact: {
-        name: 'Job-board Developer',
-      },
-      'x-api-credentials': {
-        'Default Admin Email': 'admin@jobbooster.com',
-        'Default Admin Password': 'AdminPassword123!',
-        'Note': 'Changez obligatoirement ces identifiants en production',
+        name: "Job-board Developer",
       },
     },
     servers: [
       {
-        url: 'http://localhost:3000',
-        description: 'Serveur local',
+        url: `http://localhost:${port}`,
+        description: "Serveur local",
       },
     ],
   },
-  apis: ['./src/routes/*.js'], 
+  apis: ["./src/routes/*.js"],
 };
 
 const specs = swaggerJsdoc(options);
