@@ -18,19 +18,10 @@ const allowedOrigins = [
 
 // Middlewares
 app.use(helmet());
-<<<<<<< HEAD
-app.use(
-  cors({
-    origin: allowedOrigins,
-    credentials: true,
-  })
-);
-=======
 app.use(cors({
   origin: 'http://localhost:3001', // ⚠️ ici tu dois mettre ton frontend exact quand tu es en local. En production, ce sera l'URL du frontend unique 
   credentials: true,               // ✅ permet d'envoyer les cookies
 }));
->>>>>>> origin/feat/cookie
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));   // <--- IMPORTANT !!
 app.use(cookieParser());
