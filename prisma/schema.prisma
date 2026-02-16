@@ -29,6 +29,7 @@ model Profile {
   experiences String?
   cv          String?
   phone       String?
+  confirmationStatus ConfirmationStatus @default(PENDING) @map("confirmation_status")
   user        User    @relation(fields: [userId], references: [id])
 
   @@map("profiles")
@@ -84,5 +85,11 @@ enum JobType {
 enum ApplicationStatus {
   PENDING
   REVIEWED
+  REJECTED
+}
+
+enum ConfirmationStatus {
+  PENDING
+  ACCEPTED
   REJECTED
 }

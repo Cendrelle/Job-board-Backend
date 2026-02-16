@@ -5,6 +5,9 @@ const { hashPassword, comparePassword, generateToken } = require('../utils/auth'
 exports.register = async (req, res) => {
   try {
     const { email, password} = req.body;
+    if (!email || !password) {
+      return res.status(400).json({ error: "Email et mot de passe requis" });
+    }
     const hashedPassword = await hashPassword(password);
     
     // Changement ici : on utilise passwordHash comme dans le schéma Prisma
@@ -16,9 +19,28 @@ exports.register = async (req, res) => {
       }
     });
 
-    res.status(201).json({ message: "Utilisateur créé", userId: user.id });
+    const token = generateToken(user);
+    res.cookie("access_token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 jours
+    });
+
+    res.status(201).json({
+      message: "Utilisateur créé",
+      userId: user.id,
+      user: {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+      },
+    });
 
   } catch (error) {
+    if (error?.code === "P2002") {
+      return res.status(409).json({ error: "Cet email est deja utilise" });
+    }
     res.status(400).json({ error: "Erreur lors de l'inscription" });
   }
 };
@@ -64,4 +86,15 @@ exports.login = async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: "Erreur serveur" });
   }
+};
+
+exports.logout = async (req, res) => {
+  res.clearCookie("access_token", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+  });
+
+  return res.status(200).json({ message: "Deconnexion reussie" });
 };
