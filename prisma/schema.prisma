@@ -30,6 +30,7 @@ model Profile {
   cv          String?
   phone       String?
   confirmationStatus ConfirmationStatus @default(PENDING) @map("confirmation_status")
+  isUnderContract Boolean @default(false) @map("is_under_contract")
   user        User    @relation(fields: [userId], references: [id])
 
   @@map("profiles")

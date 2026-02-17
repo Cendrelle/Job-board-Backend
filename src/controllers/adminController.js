@@ -268,3 +268,38 @@ exports.updateCandidateConfirmation = async (req, res) => {
     res.status(500).json({ message: "Erreur lors de la confirmation du profil" });
   }
 };
+
+exports.updateCandidateContractStatus = async (req, res) => {
+  try {
+    const profileId = Number(req.params.profileId);
+    const isUnderContract = Boolean(req.body?.isUnderContract);
+
+    if (!Number.isInteger(profileId) || profileId <= 0) {
+      return res.status(400).json({ message: "profileId invalide" });
+    }
+
+    const profile = await prisma.profile.update({
+      where: { id: profileId },
+      data: { isUnderContract },
+      include: {
+        user: {
+          select: {
+            id: true,
+            email: true,
+            role: true,
+            createdAt: true,
+          },
+        },
+      },
+    });
+
+    res.json({ message: "Statut de contrat mis a jour", profile });
+  } catch (error) {
+    if (error?.code === "P2025") {
+      return res.status(404).json({ message: "Profil introuvable" });
+    }
+    console.error("Erreur mise a jour statut contrat:", error);
+    res.status(500).json({ message: "Erreur lors de la mise a jour du statut de contrat" });
+  }
+};
+

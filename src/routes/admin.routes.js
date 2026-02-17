@@ -5,6 +5,7 @@ const {
   getDashboardStats,
   getPendingCandidateProfiles,
   updateCandidateConfirmation,
+  updateCandidateContractStatus,
   getAdminJobs,
 } = require("../controllers/adminController");
 
@@ -27,6 +28,13 @@ router.patch(
   authenticateToken,
   authorizeRole(["ADMIN"]),
   updateCandidateConfirmation
+);
+
+router.patch(
+  "/candidatures/:profileId/contract",
+  authenticateToken,
+  authorizeRole(["ADMIN"]),
+  updateCandidateContractStatus
 );
 
 router.get(
