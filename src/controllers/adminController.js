@@ -190,6 +190,7 @@ exports.getAdminJobs = async (req, res) => {
     const normalizedJobs = jobs.map((job) => ({
       ...job,
       source: mapJobSourceForResponse(job.source),
+      source_url: job.sourceUrl ?? null,
     }));
 
     res.json({

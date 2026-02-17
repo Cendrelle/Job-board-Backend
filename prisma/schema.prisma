@@ -44,6 +44,7 @@ model Job {
   description  String
   location     String?
   source       JobSource     @default(INTERNAL)
+  sourceUrl    String?       @map("source_url") @db.VarChar(2048)
   type         JobType
   isActive     Boolean       @default(true) @map("is_active")
   createdAt    DateTime      @default(now()) @map("created_at")
