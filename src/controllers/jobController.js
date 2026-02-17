@@ -23,11 +23,33 @@ function mapSourceForResponse(source) {
   return source;
 }
 
+function normalizeSourceUrl(value) {
+  if (value === undefined) return { value: undefined, valid: true };
+  if (value === null) return { value: null, valid: true };
+
+  const trimmed = String(value).trim();
+  if (!trimmed) return { value: null, valid: true };
+  const withProtocol = /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
+
+  try {
+    const parsed = new URL(withProtocol);
+    if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+      return { value: undefined, valid: false };
+    }
+    return { value: parsed.toString(), valid: true };
+  } catch {
+    return { value: undefined, valid: false };
+  }
+}
+
 function mapJobForResponse(job) {
-  return {
+  const response = {
     ...job,
     source: mapSourceForResponse(job.source),
+    source_url: job.sourceUrl ?? null,
   };
+
+  return response;
 }
 
 async function cleanupInvalidJobEnums() {
@@ -77,6 +99,7 @@ exports.getAllJobs = async (req, res) => {
         location: true,
         type: true,
         source: true,
+        sourceUrl: true,
         isActive: true,
         updatedAt: true,
         createdAt: true,
@@ -104,6 +127,7 @@ exports.getAllJobs = async (req, res) => {
             location: true,
             type: true,
             source: true,
+            sourceUrl: true,
             isActive: true,
             createdAt: true,
             updatedAt: true,
@@ -152,12 +176,27 @@ exports.getJobById = async (req, res) => {
 // 3. POST /api/jobs (Admin : Créer)
 exports.createJob = async (req, res) => {
   try {
-    const { title, companyName, description, location, type, companyLogo, source } = req.body;
+    const {
+      title,
+      companyName,
+      description,
+      location,
+      type,
+      companyLogo,
+      source,
+      sourceUrl,
+      source_url,
+    } = req.body;
     const normalizedType = normalizeJobType(type);
     const normalizedSource = normalizeJobSource(source || 'INTERNAL') || 'INTERNAL';
+    const normalizedSourceUrl = normalizeSourceUrl(sourceUrl ?? source_url);
 
     if (!title || !companyName || !description || !normalizedType) {
       return res.status(400).json({ error: "Champs obligatoires manquants (title, companyName, description, type)." });
+    }
+
+    if (!normalizedSourceUrl.valid) {
+      return res.status(400).json({ error: "URL de l'offre invalide. Utilisez une URL http(s)." });
     }
 
     const newJob = await prisma.job.create({
@@ -169,6 +208,7 @@ exports.createJob = async (req, res) => {
         type: normalizedType,
         companyLogo: companyLogo ? String(companyLogo).trim() : null,
         source: normalizedSource,
+        sourceUrl: normalizedSourceUrl.value ?? null,
       },
     });
 
@@ -190,6 +230,14 @@ exports.updateJob = async (req, res) => {
     }
 
     const data = { ...req.body };
+
+    if (
+      Object.prototype.hasOwnProperty.call(data, 'source_url') &&
+      !Object.prototype.hasOwnProperty.call(data, 'sourceUrl')
+    ) {
+      data.sourceUrl = data.source_url;
+    }
+    delete data.source_url;
 
     if (Object.prototype.hasOwnProperty.call(data, 'type')) {
       const normalizedType = normalizeJobType(data.type);
@@ -221,6 +269,14 @@ exports.updateJob = async (req, res) => {
 
     if (Object.prototype.hasOwnProperty.call(data, 'location')) {
       data.location = data.location ? String(data.location).trim() : null;
+    }
+
+    if (Object.prototype.hasOwnProperty.call(data, 'sourceUrl')) {
+      const normalizedSourceUrl = normalizeSourceUrl(data.sourceUrl);
+      if (!normalizedSourceUrl.valid) {
+        return res.status(400).json({ error: "URL de l'offre invalide. Utilisez une URL http(s)." });
+      }
+      data.sourceUrl = normalizedSourceUrl.value;
     }
 
     const updatedJob = await prisma.job.update({

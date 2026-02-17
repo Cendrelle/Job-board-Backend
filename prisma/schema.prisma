@@ -31,6 +31,7 @@ model Profile {
   photo       String?
   phone       String? @db.VarChar(30)
   confirmationStatus ConfirmationStatus @default(PENDING) @map("confirmation_status")
+  isUnderContract Boolean @default(false) @map("is_under_contract")
   user        User    @relation(fields: [userId], references: [id])
 
   @@map("profiles")
@@ -44,6 +45,7 @@ model Job {
   description  String
   location     String?
   source       JobSource     @default(INTERNAL)
+  sourceUrl    String?       @map("source_url") @db.VarChar(2048)
   type         JobType
   isActive     Boolean       @default(true) @map("is_active")
   createdAt    DateTime      @default(now()) @map("created_at")
