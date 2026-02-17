@@ -20,8 +20,7 @@ const allowedOrigins = [
 app.use(helmet());
 app.use(
   cors({
-    origin: allowedOrigins,
-    credentials: true,
+    origin: "https://job-board-frontend-virid.vercel.app"
   })
 );
 app.use(express.json());
