@@ -4,8 +4,22 @@ const bcrypt = require('bcryptjs');
 
 const prisma = new PrismaClient();
 
+async function normalizeInvalidUserDatetimeValues() {
+  await prisma.$executeRawUnsafe(`
+    UPDATE users
+    SET created_at = NOW(3)
+    WHERE created_at IS NULL
+       OR created_at = '0000-00-00 00:00:00'
+       OR YEAR(created_at) = 0
+       OR MONTH(created_at) = 0
+       OR DAY(created_at) = 0
+  `);
+}
+
 async function resetAdminPassword() {
   try {
+    await normalizeInvalidUserDatetimeValues();
+
     // 1. Récupérer les variables d'environnement
     const adminEmail = process.env.ADMIN_EMAIL;
     const adminPassword = process.env.ADMIN_PASSWORD;
@@ -23,6 +37,7 @@ async function resetAdminPassword() {
     // 4. Vérifier que l'admin existe
     const user = await prisma.user.findUnique({
       where: { email: adminEmail },
+      select: { id: true },
     });
 
     if (!user) {

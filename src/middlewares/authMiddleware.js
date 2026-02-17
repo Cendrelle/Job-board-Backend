@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const JWT_SECRET = process.env.JWT_SECRET || "secret";
+const { JWT_SECRET } = require("../config/env");
 
 /**
  * Middleware pour vérifier le token JWT

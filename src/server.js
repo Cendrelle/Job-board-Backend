@@ -2,7 +2,8 @@
 require("dotenv").config();
 const { execSync } = require("child_process");
 const app = require("./app");
-const PORT = process.env.PORT || 8000;
+require("./config/env");
+const PORT = process.env.PORT || 3030;
 
 // Fonction pour exécuter le seed automatiquement
 async function runSeedIfNeeded() {

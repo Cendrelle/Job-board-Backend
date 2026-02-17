@@ -17,7 +17,12 @@ const allowedOrigins = [
 ];
 
 // Middlewares
-app.use(helmet());
+app.use(
+  helmet({
+    // Permet l'affichage des images uploadées depuis le front (origin differente en dev).
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+  })
+);
 app.use(
   cors({
     origin: allowedOrigins,

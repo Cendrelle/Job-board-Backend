@@ -1,8 +1,6 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-
-// Utiliser le même secret que dans le middleware
-const JWT_SECRET = process.env.JWT_SECRET || 'secret';
+const { JWT_SECRET } = require('../config/env');
 
 /**
  * 1️⃣ Hacher le mot de passe (sécurité)

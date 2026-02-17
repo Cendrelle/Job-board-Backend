@@ -4,8 +4,54 @@ const bcrypt = require('bcryptjs');
 
 const prisma = new PrismaClient();
 
+async function normalizeInvalidDatetimeValues() {
+  // Certaines bases MySQL historiques peuvent contenir des dates "zero" (0000-00-00...)
+  // que Prisma ne peut pas parser en Date JS.
+  await prisma.$executeRawUnsafe(`
+    UPDATE users
+    SET created_at = NOW(3)
+    WHERE created_at IS NULL
+       OR created_at = '0000-00-00 00:00:00'
+       OR YEAR(created_at) = 0
+       OR MONTH(created_at) = 0
+       OR DAY(created_at) = 0
+  `);
+
+  await prisma.$executeRawUnsafe(`
+    UPDATE jobs
+    SET created_at = NOW(3)
+    WHERE created_at IS NULL
+       OR created_at = '0000-00-00 00:00:00'
+       OR YEAR(created_at) = 0
+       OR MONTH(created_at) = 0
+       OR DAY(created_at) = 0
+  `);
+
+  await prisma.$executeRawUnsafe(`
+    UPDATE jobs
+    SET updated_at = NOW(3)
+    WHERE updated_at IS NULL
+       OR updated_at = '0000-00-00 00:00:00'
+       OR YEAR(updated_at) = 0
+       OR MONTH(updated_at) = 0
+       OR DAY(updated_at) = 0
+  `);
+
+  await prisma.$executeRawUnsafe(`
+    UPDATE applications
+    SET created_at = NOW(3)
+    WHERE created_at IS NULL
+       OR created_at = '0000-00-00 00:00:00'
+       OR YEAR(created_at) = 0
+       OR MONTH(created_at) = 0
+       OR DAY(created_at) = 0
+  `);
+}
+
 async function main() {
   try {
+    await normalizeInvalidDatetimeValues();
+
     // 1. Récupérer les variables d'environnement
     const adminEmail = process.env.ADMIN_EMAIL;
     const adminPassword = process.env.ADMIN_PASSWORD;
@@ -34,6 +80,10 @@ async function main() {
         email: adminEmail,
         passwordHash: hashedPassword,
         role: 'ADMIN',
+      },
+      select: {
+        id: true,
+        email: true,
       },
     });
 
@@ -83,6 +133,10 @@ async function main() {
           email: candidate.email,
           passwordHash: hashedPassword,
           role: 'CANDIDATE',
+        },
+        select: {
+          id: true,
+          email: true,
         },
       });
 
@@ -140,6 +194,9 @@ async function main() {
         where: {
           title: job.title,
           companyName: job.companyName,
+        },
+        select: {
+          id: true,
         },
       });
 

@@ -133,6 +133,7 @@ exports.getJobById = async (req, res) => {
     const job = await prisma.job.findFirst({
       where: {
         id: parsedId,
+        isActive: true,
         type: { in: VALID_JOB_TYPES },
       },
     });

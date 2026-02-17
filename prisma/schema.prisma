@@ -24,11 +24,12 @@ model Profile {
   userId      Int     @unique @map("user_id")
   firstName   String  @map("first_name")
   lastName    String  @map("last_name")
-  competences String?
-  formation   String?
-  experiences String?
+  competences String? @db.VarChar(500)
+  formation   String? @db.VarChar(500)
+  experiences String? @db.VarChar(500)
   cv          String?
-  phone       String?
+  photo       String?
+  phone       String? @db.VarChar(30)
   confirmationStatus ConfirmationStatus @default(PENDING) @map("confirmation_status")
   user        User    @relation(fields: [userId], references: [id])
 

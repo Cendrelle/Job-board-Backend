@@ -37,6 +37,8 @@ const {
  *           type: string
  *         cv:
  *           type: string
+ *         photo:
+ *           type: string
  *       required:
  *         - firstName
  *         - lastName
@@ -65,7 +67,10 @@ const {
 router.post(
   "/profile",
   authenticateToken,
-  upload.single("cv"),
+  upload.fields([
+    { name: "cv", maxCount: 1 },
+    { name: "photo", maxCount: 1 },
+  ]),
   createOrUpdateProfile
 );
 

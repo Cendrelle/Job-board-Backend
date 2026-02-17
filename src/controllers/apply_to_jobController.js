@@ -9,15 +9,22 @@ exports.applyToJob = async (req, res) => {
 
   const userId = req.user.id;
   const jobId = Number(req.params.id);
+  if (!Number.isInteger(jobId) || jobId <= 0) {
+    return res.status(400).json({ message: "ID d'offre invalide." });
+  }
 
   try {
     const job = await prisma.job.findUnique({
       where: { id: jobId },
-      select: { id: true, title: true, companyName: true },
+      select: { id: true, title: true, companyName: true, isActive: true },
     });
 
     if (!job) {
       return res.status(404).json({ message: "Offre introuvable." });
+    }
+
+    if (!job.isActive) {
+      return res.status(400).json({ message: "Cette offre n'accepte plus de candidatures." });
     }
 
     // Verifier le profil + CV
